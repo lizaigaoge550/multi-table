@@ -1,0 +1,174 @@
+"most":[
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.populatoin", False, "C"]
+	},
+	{
+	"left":["city.city_name", False, "C"],
+	"right":["city.populatoin", False, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["count(river.river_name)", False, "A"]
+	},
+	{
+	"left":["river.river_name", False, "C"],
+	"right":["count(state.state_name)", False, "A"]
+	},
+	{
+	"left":["border_info.border", False, "C"],
+	"right":["count(border.state_name)", False, "A"]
+	},
+	{
+	"left":["city.state_name", False, "C"],
+	"right":["count(city.city_name)", False, "A"]
+	}
+]
+"greatest":[
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.density", False, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.populatoin", False, "C"]
+	},
+	{
+	"left":["city.city_name", False, "C"],
+	"right":["city.populatoin", False, "C"]
+	},
+		{
+	"left":["state.state_name", False, "C"],
+	"right":["count(river.river_name)", False, "A"]
+	},
+	{
+	"left":["river.river_name", False, "C"],
+	"right":["count(state.state_name)", False, "A"]
+	},
+	{
+	"left":["border_info.border", False, "C"],
+	"right":["count(border.state_name)", False, "A"]
+	},
+	{
+	"left":["city.state_name", False, "C"],
+	"right":["count(city.city_name)", False, "A"]
+	}
+]
+"least":[
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.density", False, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.populatoin", False, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.populatoin", False, "C"]
+	},
+	{
+	"left":["city.city_name", False, "C"],
+	"right":["city.populatoin", False, "C"]
+	}
+]
+"biggest":[
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.populatoin", True, "C"]
+	},
+	{
+	"left":["city.city_name", False, "C"],
+	"right":["city.populatoin", True, "C"]
+	}
+]
+"largest":[
+	{
+	"left":["city", False, "T"],
+	"right":["city.population", False, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.area", True, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.area", False, "C"]
+	},
+	{
+	"left":["city.city_name", False, "C"],
+	"right":["city.populatoin", True, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.populatoin", False, "C"]
+	},
+	{
+	"left":["city.city_name", False, "C"],
+	"right":["city.populatoin", False, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.density", False, "C"]
+	},
+	{
+	"left":["river.river_name", False, "C"],
+	"right":["river.length", False, "C"]
+	}
+]
+"longest":[
+	{
+	"left":["river.river_name", False, "C"],
+	"right":["river.length", False, "C"]
+	}
+]
+"smallest":[
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.area", True, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.area", False, "C"]
+	},
+	{
+	"left":["city.city_name", False, "C"],
+	"right":["city.populatoin", True, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.populatoin", False, "C"]
+	},
+	{
+	"left":["city.city_name", False, "C"],
+	"right":["city.populatoin", False, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.density", False, "C"]
+	},
+	{
+	"left":["river.river_name", False, "C"],
+	"right":["river.length", False, "C"]
+	}
+]
+"highest":[
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.density", False, "C"]
+	},
+	{
+	"left":["state.state_name", False, "C"],
+	"right":["state.populatoin", False, "C"]
+	},
+	{
+	"left":["mountain.mountain_name", False, "C"],
+	"right":["mountain.mountain_altitude", True, "C"]
+	}
+]
+"tallest":[
+	{
+	"left":["mountain.mountain_name", False, "C"],
+	"right":["mountain.mountain_altitude", True, "C"]
+	}
+]
