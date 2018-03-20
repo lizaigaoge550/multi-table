@@ -1,4 +1,4 @@
-from expression import extract_c
+from common import extract_c,extract_where
 
 class WhereClass():
     def __init__(self,key, value):
@@ -16,8 +16,10 @@ class JoinClass():
         self.condition = condition
     def __str__(self):
         return self.t.t_name + ' on ' +self.condition
+    def __cmp__(self, other):
+        return self.t.t_name == other.t.t_name
 
-class SQL(object):
+class SQL():
     def __init__(self):
         self.Select = []
         self.Where = []
@@ -50,7 +52,8 @@ class SQL(object):
 
     #join 需要两个一个join哪张表，一个join的条件
     def padding_join(self,t,k1,k2):
-        self.Join.append(JoinClass(t,k1+'='+k2))
+        if JoinClass(t,k1+'='+k2) not in self.Join:
+            self.Join.append(JoinClass(t,k1+'='+k2))
 
     def __str__(self):
         #先提取select的东西
@@ -58,13 +61,15 @@ class SQL(object):
         if len(self.Select):
             res += 'select ' + extract_c(self.Select)
         if len(self.From):
-            res += ' from ' + str(self.From[0])
+            res += ' from ' + str(self.From[0].sql)
         if len(self.Groupby):
-            res += 'group by ' + extract_c(self.Groupby)
+            res += ' group by ' + extract_c(self.Groupby)
         if len(self.Join):
-            res += ' join ' + str(self.Join[0].t)
+            res += ' join ' + str(self.Join[0].t.sql)
             res += ' on ' + self.Join[0].condition
+        if len(self.Where):
+            res += ' where ' + extract_where(self.Where)
         if len(self.Orderby):
-            res += 'order by ' + extract_c(self.Orderby) + ' desc limit 1'
+            res += ' order by ' + extract_c(self.Orderby,'order') + ' desc limit 1'
         res += ')'+self.t_name
         return res

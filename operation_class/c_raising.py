@@ -5,16 +5,17 @@ from count_class.counter_class import Counter
 class C_Raising(object):
     def __init__(self,param):
         self.param = param
+        self.param_list = [self.param]
         # 填写属性
         self.t_name = self._get_t_name()
         self.c_name = self._get_c_name()
         self.c_type = self._get_c_type()
         self.parent_t_name = self._get_parent_t_name()
-        self.value = self._get_value()
         #有两种情况 一种是S-->T 还有一种是 c-->T
+        self.value = self._get_value()
         self.sql = SQL()
         self._get_sql()
-
+        self.sql.t_name = self.t_name
 
     def _get_sql(self):
         self.sql = c_generate_sql(self.param,self.sql)
@@ -22,15 +23,15 @@ class C_Raising(object):
 
     @classmethod
     def _condition(cls,p1):
-        if 'lambda' in p1:
+        if 'lambda' in p1.value:
             return False
         return True
 
     def __new__(cls,p1):
-        instance = super(C_Raising,cls).__new__(cls)
         f = C_Raising._condition(p1)
         if f == True:
-            return instance.__init__(p1)
+            instance = super(C_Raising, cls).__new__(cls)
+            return instance
         return None
 
     def _get_t_name(self):

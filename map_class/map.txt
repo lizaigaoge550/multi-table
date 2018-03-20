@@ -1,0 +1,2 @@
+border_info.state_name,city.state_name,lake.state_name,highlow.state_name,mountain.state_name,state.state_name,river.traverse,border_info.border,river.river_name,lake.lake_name
+city.city_name,state.capital

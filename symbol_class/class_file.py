@@ -13,6 +13,7 @@ class cClass(BaseClass):
         self.description = value
         self.dir = None
         self.T = None
+        self.role = ""
     def __str__(self):
         return 'c'
 
@@ -26,13 +27,16 @@ class Param(object):
 
 
 class SClass(BaseClass):
-    def __init__(self,t_name, c_name, c_type):
+    def __init__(self,t_name, c_name, c_type, value):
         super(SClass,self).__init__(t_name, c_name, c_type)
-        self.value = 'S'
+        self.value = value
         self.key1 = None
         self.key2 = None
+        self.param_1 = None
+        self.param_2 = None
+        self.param_list = [self.param_1, self.param_2]
     def __str__(self):
-        return 'S'
+        return self.value
 
 
 class TClass(BaseClass):
@@ -41,9 +45,9 @@ class TClass(BaseClass):
         self.description = t_name
         self.value = 'T'
         self.sql = t_name
+        self.parent_name = t_name
     def __str__(self):
-        return 'T'
-
+        return self.t_name
 
 class VClass(BaseClass):
     def __init__(self,t_name, c_name, c_type, cell_value,value):
@@ -52,64 +56,15 @@ class VClass(BaseClass):
         self.cell_value = cell_value
         self.description = value
         self.T = None
+        self.role = ""
     def __str__(self):
         return 'V'
 
 
-class NClass(BaseClass):
-    def __init__(self,t_name, c_name, c_type, upper, lower, number_type,value):
-        super(NClass,self).__init__(t_name,c_name,c_type)
-        self.c_type = 'number' #N 的 type一定是number
-        self.value = 'N'
-        self.upper = upper
-        self.lower = lower
-        self.number_type = number_type
-        self.description = value
-    def __str__(self):
-        return 'N'
-
-
-class DClass(BaseClass):
-    def __init__(self,t_name, c_name, c_type, upper, lower, time_type,value):
-        super(DClass,self).__init__(t_name,c_name,c_type)
-        self.c_type = 'date' #D 的 type一定是number
-        self.value = 'D'
-        self.upper = upper
-        self.lower = lower
-        self.time_type = time_type
-        self.description = value
-    def __str__(self):
-        return 'D'
-
-class BlankClass(BaseClass):
-    def __init__(self,t_name,c_name,c_type,value):
-        super(BlankClass,self).__init__(t_name,c_name,c_type)
-        self.c_type = 'blank' #N 的 type一定是number
-        self.value = 'blank'
-        self.description = value
-    def __str__(self):
-        return 'blank'
-
-class ExcludeClass(BaseClass):
-    def __init__(self,t_name,c_name,c_type,value):
-        super(ExcludeClass,self).__init__(t_name,c_name,c_type)
-        self.c_type = "Excluding" #N 的 type一定是number
-        self.value = 'Excluding'
-        self.description = value
-    def __str__(self):
-        return 'Excluding'
-
-class DirClass():
-    def __init__(self,value):
-        self.value= 'dir'
-        self.description = value
-    def __str__(self):
-        return 'Dir'
-
 class StarClass():
-    def __init__(self):
-        self.value = '*'
+    def __init__(self,t_name):
+        self.value = '%s.*'%t_name
     def __str__(self):
-        return '*'
+        return self.value
 
 

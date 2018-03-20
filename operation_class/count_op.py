@@ -7,9 +7,14 @@ class Count(object):
         self.c_name = self._get_c_name()
         self.c_type = self._get_c_type()
         self.value = self._get_value()
+        self.description = self._get_description()
         self.alias = 'cnt'
         self.T = param.T
 
+
+
+    def _get_description(self):
+        return 'count(%s)'%self.param.c_name
 
     def _get_t_name(self):
         return self.param.t_name

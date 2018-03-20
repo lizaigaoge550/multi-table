@@ -7,19 +7,6 @@ from operation_class.filter import In
 from symbol_class.class_file import cClass
 import re
 
-def create(optype, child, is_bottom):
-    #optype 有两种情况 1 ""  c -- > T . 2 Raising S -- > T. 3 Rasing c --> A
-    if optype == 'Raising':
-        return Raising(child.val)
-    if optype == "C_Raising":
-        return C_Raising(child.val)
-    if is_bottom == True and optype == 'count':
-        return Count(child.val)
-    if is_bottom == True and optype == 'Filter':
-        #生成一个c
-        c = cClass(child.val.t_name,child.val.c_name,child.val.c_type,child.val.t_name+'.'+child.val.c_name)
-        return In(c,child.val)
-
 def extract_opt(opt):
     if '(' not in opt:
         return ""
@@ -30,6 +17,22 @@ def extract_opt(opt):
             new_opt += opt[i]
         else:
             return new_opt
+
+def create(optype, child, is_bottom):
+    #optype 有两种情况 1 ""  c -- > T . 2 Raising S -- > T. 3 Rasing c --> A
+    optype = extract_opt(optype)
+    if optype == 'Raising':
+        return Raising(child.val)
+    if optype == "C_Raising":
+        return C_Raising(child.val)
+    if is_bottom == True and optype == 'count':
+        return Count(child.val)
+    if is_bottom == True and optype == 'In':
+        #生成一个c
+        c = cClass(child.val.t_name, child.val.c_name, child.val.c_type, child.val.t_name+'.'+child.val.c_name)
+        c.T = child.val.T
+        return In(c,child.val)
+
 
 def extract_paramter(func):
     if '(' not in func:return None

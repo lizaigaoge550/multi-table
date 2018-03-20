@@ -3,15 +3,19 @@
 from symbol_class.class_file import TClass
 from count_class.counter_class import Counter
 from sql_class.sql import SQL
+from generate_sql.a_generate_sql import a_generate_sql
 
 def generate_Tclass(a1,a2):
-    t = TClass(get_t_name(),c_name=[a1.c_name,a2.value],c_type=['string','number'])
+    #a2可以是modify的A
+    t = TClass(get_t_name(),c_name=[a1.c_name,a2.description],c_type=['string','number'])
     t.sql = SQL()
+    # t.sql.padding_select(a2)
+    a_generate_sql(a2, t.sql)
     t.sql.padding_select(a1)
-    t.sql.padding_select(a2)
     t.sql.padding_from(a1.T)
     t.sql.padding_groupby(a1)
-
+    t.sql.t_name = t.t_name
+    #print('genetate_Tclass:{0}'.format(t.sql))
     return t
 
 def get_t_name():

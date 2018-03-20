@@ -1,11 +1,10 @@
 import glob
 import os
 import json
-from opt_class import *
 from symbol_class.class_file import *
-from getTable import get_table
 import copy
-t_name,Table = get_table()
+from operation_class.count_op import Count
+from table_info.get_table_info import get_table
 
 
 def generate_index(inital,s,count):
@@ -21,7 +20,7 @@ def generate_index(inital,s,count):
 def no_pat(tag,index):
     s = []
     for i in range(len(tag[index])):
-        if tag[index][i] != 'pat':
+        if tag[index][i] != 'verb':
             s.append(tag[index][i])
     return s
 
@@ -31,7 +30,7 @@ def generate_multi_tags(tags):
     pat_index = []
     index_count = 0
     for tag_index in range(len(tags)):
-        if 'pat' in tags[tag_index]:
+        if 'verb' in tags[tag_index]:
             pat_index.append(tag_index)
             index_count += 1
     if index_count == 0:
@@ -49,15 +48,52 @@ def generate_multi_tags(tags):
             else:
                 tag_copy[index] = no_pat(tag_copy,index)
         tag_copy = list(filter(lambda a:a!=[],tag_copy))
-        data.append(tag_copy)
+        data.append(copy.deepcopy(tag_copy))
     return data
+
+
+
+def generate_parameter(key,leixing):
+    if key[-1] == 'C':
+        return cClass(t_name=key[0].split('.')[0],c_name=key[0],c_type=leixing,value=key[0])
+    if key[-1] == 'A':
+        content = key[key.find("(") + 1:key.find(")")]
+        return Count(cClass(t_name=content.split('.')[0],c_name=content,c_type='string',value=content))
+    # if key[-1] == 'T':
+    #     return TClass(t_name=key[0],c_name=)
+
+def get_S_tname_cols_coltype(tag,s):
+    #看看key1, key2 是不是都是false
+    key1 = tag['key1']
+    key2 = tag['key2']
+    s.key1 = Param(key1[0],key1[1],key1[-1] if key1[-1] != 'C' else 'c')
+    s.key2 = Param(key2[0],key2[1],key2[-1] if key2[-1] != 'C' else 'c')
+    if key1[1] == True:
+        s.t_name = [key1[0].split('.')[0]]
+        s.c_name = [key1[0]]
+        s.param_1 = generate_parameter(key1,'string')
+    if key2[1] == True:
+        s.t_name = [key2[0].split('.')[0]]
+        s.c_name = [key2[0]]
+        s.param_2 = generate_parameter(key2,'number')
+
+
+
+
+def get_S_value(value):
+    vs = list(filter(lambda a:a,value.split('.')[0].split('@')))
+    new_v = 'lambda('
+    for v in vs:
+        if v == 'C':v = 'c'
+        new_v += v + ','
+    return new_v[:-1]+').S'
 
 
 
 
 def read_data(path):
     data = {}
-    sql = {}
+    #sql = {}
     abstract_data = {}
     for eachfile in glob.glob(os.path.join(path,'*')):
         item = json.load(open(eachfile,encoding='utf-8-sig'))
@@ -74,66 +110,45 @@ def read_data(path):
                 value = tag[j]['Type']
                 if value == 'Vistype': continue
                 # #如果value 是 c 和 V, T 的话
-                if value == 'c' or value == 'v' or value == 'T' or value == 'N' or value == 'D' or value == 'Blank' \
-                        or value == 'Excluding' or value == 'dir' or value == 'pat':
-
-                    if value == 'pat':
-                        description = tag[j]['values']
-                    else:
-                        description = tag[j]['value']
-
+                if value == 'c' or value == 'v' or value == 'S' or value == 'verb':
                     if value == 'c' or value == 'v':
-                        c_name = description.split('.')[1]
-                        if c_name not in Table: print(c_name); print(c_name);raise ("c_name not in Table")
                         if value == 'c':
-
-                            label.append([cClass(t_name=t_name, c_name=c_name, c_type=Table[c_name], value=description),left,right])
-
+                            c_cls = cClass(t_name=tag[j]['tab_name'], c_name=tag[j]['value'],
+                                                 c_type=tag[j]['data_type'], value=tag[j]['value'])
+                            c_cls.role = tag[j]['role']
+                            c_name, c_type = get_table(c_cls.t_name)
+                            t = TClass(t_name=c_cls.t_name,c_name=c_name,c_type=c_type)
+                            c_cls.T = t
+                            label.append([c_cls,left,right])
 
                         if value == 'v':
-                            label.append([VClass(t_name=t_name, c_name=c_name, c_type=Table[c_name],
-                                                value=tag[j]['value']),left,right])
+                            v_cls = VClass(t_name=tag[j]['tab_name'], c_name=tag[j]['col_name'], c_type="string",
+                                                cell_value=tag[j]['pure_value'],value=tag[j]['value'])
+                            v_cls.role = tag[j]['role']
+                            c_name, c_type = get_table(v_cls.t_name)
+                            t = TClass(t_name=v_cls.t_name,c_name=c_name,c_type=c_type)
+                            v_cls.T = t
+                            label.append([v_cls,left,right])
 
-                    elif value == 'T':
-                        label.append(
-                            [TClass(t_name=t_name, c_name=list(Table.keys()), c_type=list(Table.values())),left,right])
-                    elif value == 'N':
-                        label.append([NClass(None, None, 'string', tag[j]['value']),left,right])
-                    elif value == 'D':
-                        label.append([DClass(t_name=t_name, c_name=tag[j]['col'].split('.')[-1], c_type='date', value=tag[j]['value']),
-                                      left,right])
-                    elif value == 'Blank':
-                        f = BlankClass(None, None, None, 'blank')
-                        label.append([f,left,right])
-                    elif value == 'Excluding':
-                        f = ExcludeClass(None, None, None, 'Excluding')
-                        label.append([f,left,right])
-                    elif value == 'dir':
-                        f = DirClass(description)
-                        label.append([f,left,right])
-                    elif value == 'pat':
-                        label.append('pat')
+                    elif value == 'S':
+                        f = SClass([],[],[],get_S_value(tag[j]['value']))
+                        get_S_tname_cols_coltype(tag[j],f)
+                        label.append([f, left, right])
+
+                    elif value == 'verb':
+                        label.append('verb')
+
                     else:
                         print(value)
                         raise ('Type is not right')
-
-                else:
-                    func = value.split('.')[-1]  #F只能是S
-                    assert func == 'S',"func is not S"
-                    try:
-                        f = SClass(tag[j]['Category'])
-                    except:
-                        print(eachfile)
-                        exit(10000)
-                    label.append([f,left,right])
 
             if len(label): tags.append(label)
         if len(tags) == 0: print(item);continue
         tags = generate_multi_tags(tags)
         data[item["raw_utterance"]] = tags
-        sql[item['raw_utterance']] = item["sql_info"]
+        #sql[item['raw_utterance']] = item["sql_info"]
         abstract_data[item['raw_utterance']] = item['abstract_utterance']
 
-    return data, sql, abstract_data
+    return data, abstract_data
 
 

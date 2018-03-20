@@ -23,14 +23,8 @@ def addPunctuation(utterance):
 
 def data_abstact(destpath, srcpath):
     for eachfile in glob.glob(os.path.join(destpath, '*')):
-        try:
-            item = json.load(open(eachfile, encoding='utf-8-sig'))
-        except Exception as e:
-            print(eachfile)
-            print(e)
-            exit(1000)
+        item = json.load(open(eachfile, encoding='utf-8-sig'))[0]
         raw_utterance = nltk.tokenize.word_tokenize(item['raw_utterance'])
-
         tag_info = item['new_tag_utterance']
         mark = {}
         for i in range(len(tag_info)):
@@ -38,8 +32,7 @@ def data_abstact(destpath, srcpath):
             left = tag_info[i]['left_index']
             right = tag_info[i]['right_index']
             type = tag[0]['Type']
-            if type == 'c' or type == 'v' or type == 'T' or type == 'D' or type == 'blank' \
-                    or type == 'Excluding' or type == 'dir' or type == 'N':
+            if type == 'c' or type == 'v':
                 #标记下
                 mark[(left,right)] = type
                 tag_info[i]['inter_utterance'] = type
@@ -87,4 +80,4 @@ def data_abstact(destpath, srcpath):
         if not os.path.exists(srcpath): os.mkdir(srcpath)
         json.dump(item,open(os.path.join(srcpath,eachfile.split('\\')[-1]),'w',encoding='utf-8'),indent=4,ensure_ascii=False)
 
-data_abstact('D:\\Git\\AnnaTalkParser\\Data_New_Format\\SharkAttack','SharkAttackPost')
+#data_abstact('D:\\Git\\AnnaTalkParser\\Data_New_Format\\geo_train', 'geo')
